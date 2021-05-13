@@ -25,7 +25,7 @@ public class ClientsServiceImpl implements ClientService {
 
     @Override
     public Optional<TortugaClient> getClientById(long id) {
-        return Optional.ofNullable(dao.getClientById(id));
+        return dao.getClientById(id);
     }
 
     @Override

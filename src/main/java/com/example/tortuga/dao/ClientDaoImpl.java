@@ -4,12 +4,18 @@ import com.example.tortuga.entity.TortugaClient;
 
 import com.example.tortuga.mapper.TortugaClientRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ClientDaoImpl implements Dao<TortugaClient> {
@@ -27,10 +33,11 @@ public class ClientDaoImpl implements Dao<TortugaClient> {
     }
 
     @Override
-    public TortugaClient getClientById(long id) {
-        String query = "SELECT client FROM clients WHERE id= :id";
+    public Optional<TortugaClient> getClientById(long id) {
+        String query = "SELECT * FROM clients WHERE id= :id";
         SqlParameterSource param = new MapSqlParameterSource("id", id);
-        return template.queryForObject(query, param, new TortugaClientRowMapper());
+        List<TortugaClient> tortugaClients = template.query(query, param, new TortugaClientRowMapper());
+        return tortugaClients.isEmpty() ? Optional.empty() : Optional.of(tortugaClients.get(0));
     }
 
     @Override
